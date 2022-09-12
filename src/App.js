@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css';
 import { Container, Row, Col } from 'react-bootstrap'
+import MovieDetails from './MovieDetails';
 
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
   const[ info,setInfo]= useState([])
   const [pageIndex,setPageIndex]= useState(1)
   const [totalPages,setTotalPages]= useState(0)
+  const [activeMovieIndex, setActiveMovieIndex] = useState(0)
  useEffect(()=>{
   setPageIndex(1)
   setTotalPages(1)
@@ -30,7 +32,10 @@ function App() {
     const movieInfo = ()=>{setInfo(movie)} 
     console.log(movieInfo, 'here')
     return (
-      <li key={index}>
+      <li key={index} onClick={()=> {
+        
+        setActiveMovieIndex(index)
+        }}>
         <h3 onClick={movieInfo}>{movie.title}</h3>
         <div>
           {movie.overview}
@@ -39,10 +44,11 @@ function App() {
     )
     
   })
-  const navigateNext = ()=>{setPageIndex((prev => prev +1))
+  const navigateNext = ()=>{
   readMovies(pageIndex +1)
   }
-  let movie= false;
+
+  let movie= false
     if (movies.length>1){
       movie= movies[0]
     }
@@ -50,8 +56,15 @@ function App() {
     if(movies.length > 0){
       navButtons= (
         <div>
-          <button>prev</button>
-          <button>next</button>
+          <button
+          onClick={()=> readMovies(pageIndex - 1)}
+          disabled= {pageIndex === 1}
+          >prev</button>
+          {pageIndex} / {totalPages}
+          <button
+          onClick={()=> readMovies(pageIndex + 1)} 
+          disabled={pageIndex === totalPages} 
+          >next</button>
         </div>
       )
     }
